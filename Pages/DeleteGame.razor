@@ -19,7 +19,9 @@
 
     private string title = string.Empty;
 
-    [Parameter] public EventCallback<bool> OnClose { get; set; }
+    [Parameter]
+    public bool IsClosing { get; set; }
+    [Parameter] public EventCallback<bool> IsClosingChanged { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -28,12 +30,12 @@
 
     private void Confirm()
     {
-        OnClose.InvokeAsync(true);
+        IsClosingChanged.InvokeAsync(true);
     }
 
     private void Cancel()
     {
-        OnClose.InvokeAsync(false);
+        IsClosingChanged.InvokeAsync(false);
     }
 
 }
