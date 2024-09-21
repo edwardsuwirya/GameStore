@@ -1,5 +1,12 @@
 @page "/"
-<h3>Welcome</h3>
+@inject NavigationManager NavManager
+
 @code {
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavManager.NavigateTo("/Authentication/Login");
+    }
 
 }

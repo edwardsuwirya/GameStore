@@ -1,0 +1,19 @@
+@page "/Authentication/Login"
+@layout EmptyLayout
+<div class="row">
+    <div class="col-sm-4">
+        <EditForm Model="userAccessCredential" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="mb-3">
+                <label for="name" class="form-label">User Name:</label>
+                <InputText id="name" @bind-Value="userAccessCredential.UserName" class="form-control"></InputText>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <InputText id="password" @bind-Value="userAccessCredential.Password" type="password" class="form-control"></InputText>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </EditForm>
+    </div>
+</div>
