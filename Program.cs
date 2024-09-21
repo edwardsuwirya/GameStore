@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using GameStore;
 using GameStore.Data;
 using GameStore.Repository;
+using GameStore.Shared.States;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -15,7 +16,14 @@ void ConfigureCommonServices(IServiceCollection services)
     services.AddSingleton<GameDataSource>();
     services.AddScoped<IClientService, ClientService>();
     services.AddScoped<IGameService, GameService>();
+    services.AddScoped<IAccountService, AccountService>();
+}
+
+void ConfigureStateServices(IServiceCollection services)
+{
+    services.AddSingleton<AuthState>();
 }
 
 ConfigureCommonServices(builder.Services);
+ConfigureStateServices(builder.Services);
 await builder.Build().RunAsync();

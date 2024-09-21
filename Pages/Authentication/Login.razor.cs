@@ -1,14 +1,15 @@
+using GameStore.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace GameStore.Pages.Authentication;
 
 public partial class Login : ComponentBase
 {
-    private Models.UserAccess? userAccessCredential;
+    private UserAccess? _userAccessCredential;
 
     protected override void OnInitialized()
     {
-        userAccessCredential = new Models.UserAccess()
+        _userAccessCredential = new UserAccess()
         {
             UserName = string.Empty,
             Password = string.Empty,
@@ -17,16 +18,7 @@ public partial class Login : ComponentBase
 
     private void HandleSubmit()
     {
-        if (userAccessCredential == null)
-        {
-            NavManager.NavigateTo("/Authentication/Login");
-        }
-        else
-        {
-            if (userAccessCredential.UserName.Equals("edo") && userAccessCredential.Password.Equals("123456"))
-            {
-                NavManager.NavigateTo("/Game");
-            }
-        }
+        var client = AccountService.Login(_userAccessCredential);
+        NavManager.NavigateTo(client == null ? "/Authentication/Login" : "/Game");
     }
 }

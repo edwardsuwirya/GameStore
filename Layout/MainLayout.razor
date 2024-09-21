@@ -1,4 +1,12 @@
-﻿@inherits LayoutComponentBase
+﻿@using GameStore.Shared.States
+@using GameStore.Shared.Components
+@inherits LayoutComponentBase
+@inject AuthState AuthState
+
+@if (AuthState.Client is null)
+{
+    <RedirectToLogin/>
+}
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
