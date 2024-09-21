@@ -1,0 +1,13 @@
+@page "/Client"
+@using GameStore.Shared.Components
+<PageTitle>Client</PageTitle>
+<h1>Client</h1>
+<ClientList>
+    <NullClientList>
+        <Loading/>
+    </NullClientList>
+    <EmptyClientList>
+        <br/>
+        <span>No clients to display</span>
+    </EmptyClientList>
+</ClientList>

@@ -1,0 +1,23 @@
+@typeparam TItem
+<h1>@Title</h1>
+<div>
+    @ActionHeader
+</div>
+<table class="table table-striped table-bordered table-hover">
+    <thead class="table-dark">
+    <tr>
+        @Header
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Items)
+    {
+        <tr>
+            @Row(item)
+        </tr>
+    }
+    </tbody>
+    <tfoot>
+    <tr>@Footer</tr>
+    </tfoot>
+</table>

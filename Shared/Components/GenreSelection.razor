@@ -1,0 +1,7 @@
+<InputSelect id="@Id" @bind-Value="SelectedGenre" class="form-control">
+    <option value="">Please genre</option>
+    @foreach (var genre in GenreDictionary.GenreDescription)
+    {
+        <option value="@genre.Key">@genre.Value</option>
+    }
+</InputSelect>

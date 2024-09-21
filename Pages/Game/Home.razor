@@ -1,0 +1,49 @@
+﻿@page "/Game"
+@using GameStore.Shared
+@using GameStore.Shared.Components
+
+<PageTitle>Game Catalog</PageTitle>
+
+@if (games is null)
+{
+    <Loading/>
+}
+else
+{
+    <CommonGrid Title="Game Catalog!" Items="games">
+        <ActionHeader>
+            <div class="row mb-4">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-primary" @onclick="@CreateGame">New Game</button>
+                </div>
+            </div>
+            <DeleteGame Game="@currentGame" @bind-IsClosing="@IsModalClosing"/>
+        </ActionHeader>
+        <Header>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Genre</th>
+            <th>Price</th>
+            <th>Release Date</th>
+            <th></th>
+        </Header>
+        <Row>
+            <td>@context.Id</td>
+            <td>@context.Name</td>
+            <td>@GenreDictionary.GenreDescriptionString(context.Genre)</td>
+            <td>@context.Price</td>
+            <td>@context.ReleaseDate.ToString("MM/dd/yyyy")</td>
+            <td style="white-space: nowrap">
+                <button class="btn btn-primary" @onclick="() => EditGame(context.Id)">
+                    <i class="oui--pencil"></i>
+                </button>
+                <button class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                        @onclick="() => currentGame = context">
+                    <i class="oui--eraser"></i>
+                </button>
+            </td>
+        </Row>
+    </CommonGrid>
+}
