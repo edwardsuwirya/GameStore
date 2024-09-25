@@ -7,7 +7,7 @@ public partial class Logout : ComponentBase
 {
     protected override async Task OnInitializedAsync()
     {
-        await AuthenticationService.Logout();
+        await AuthState.UpdateAuthenticationState(null);
         NavManager.NavigateTo(PageRoute.Login, forceLoad: true);
     }
 }

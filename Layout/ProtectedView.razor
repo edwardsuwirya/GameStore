@@ -1,5 +1,6 @@
 @using GameStore.Shared.Components
-@inject IAuthenticationService AuthenticationService
+@using GameStore.Shared.States
+@inject AuthState AuthState
 
 @if (userInfoResponse.IsSuccess)
 {

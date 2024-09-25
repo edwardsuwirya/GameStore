@@ -3,13 +3,15 @@
 @using GameStore.Shared.Navigation
 @attribute [Route(PageRoute.Game)]
 
+<PageTitle>Game</PageTitle>
+<h2>Game Catalog</h2>
 @if (isLoading)
 {
     <Loading/>
 }
 else
 {
-    <CommonGrid Title="Game Catalog!" Items="games">
+    <CommonGrid Items="games">
         <ActionHeader>
             <div class="row mb-4">
                 <div class="col-sm-6">

@@ -24,9 +24,9 @@ void ConfigureCommonServices(IServiceCollection services)
 
 void ConfigureStateServices(IServiceCollection services)
 {
-    services.AddScoped<LocalStorageService>();
-    // AuthState is not needed anymore, already handled by local storage service
-    services.AddSingleton<AuthState>();
+    services.AddScoped<AuthState>();
+    services.AddScoped<LocalStorage>();
+    
 }
 
 ConfigureCommonServices(builder.Services);

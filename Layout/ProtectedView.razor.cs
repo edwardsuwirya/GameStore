@@ -13,7 +13,7 @@ public partial class ProtectedView : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var user = await AuthenticationService.GetUserCredential();
+        var user = await AuthState.GetAuthenticationStateAsync();
         if (user is null)
         {
             userInfoResponse = ResponseWrapper<string>.Fail("Access denied");
