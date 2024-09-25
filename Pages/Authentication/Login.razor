@@ -1,7 +1,9 @@
 @using GameStore.Shared.Navigation
+@using GameStore.Shared.States
 @attribute [Route(PageRoute.Login)]
 @layout EmptyLayout
 @inject IAuthenticationService AuthenticationService;
+@inject AuthState AuthState;
 
 <div class="d-flex justify-content-center">
     <div class="col-sm-6 col-md-4 col-md-offset-4">

@@ -30,6 +30,7 @@ public partial class Login : ComponentBase
                 break;
             case ResponseStatus.Success:
                 isLoading = false;
+                await AuthState.UpdateAuthenticationState(client.Data);
                 NavManager.NavigateTo(PageRoute.Game, forceLoad: true);
                 break;
             case ResponseStatus.Failed:
