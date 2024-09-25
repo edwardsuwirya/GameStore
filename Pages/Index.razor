@@ -1,4 +1,6 @@
 @page "/"
+@using GameStore.Shared.Navigation
+@layout EmptyLayout;
 @inject NavigationManager NavManager
 
 @code {
@@ -6,7 +8,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        NavManager.NavigateTo("/Authentication/Login");
+        NavManager.NavigateTo(PageRoute.Login);
     }
 
 }

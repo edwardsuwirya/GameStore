@@ -9,5 +9,5 @@ public partial class CommonGrid<TItem> : ComponentBase
     [Parameter] public RenderFragment ActionHeader { get; set; }
     [Parameter] public RenderFragment<TItem> Row { get; set; }
     [Parameter] public RenderFragment Footer { get; set; }
-    [Parameter] public TItem[] Items { get; set; }
+    [Parameter] public TItem[]? Items { get; set; }
 }

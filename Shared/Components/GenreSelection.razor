@@ -1,3 +1,4 @@
+@using GameStore.Models
 <InputSelect id="@Id" @bind-Value="SelectedGenre" class="form-control">
     <option value="">Please genre</option>
     @foreach (var genre in GenreDictionary.GenreDescription)

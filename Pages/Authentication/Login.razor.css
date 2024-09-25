@@ -1,0 +1,34 @@
+.form-signin {
+    max-width: 330px;
+    padding: 8px;
+    margin: 0 auto;
+}
+
+ .name{
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.account-wall {
+    margin-top: 20px;
+    padding: 40px 0px 40px 0px;
+    background-color: #f7f7f7;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 24px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.new-account {
+    display: block;
+    margin-top: 10px;
+}

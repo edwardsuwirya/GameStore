@@ -1,5 +1,4 @@
 @typeparam TItem
-<h1>@Title</h1>
 <div>
     @ActionHeader
 </div>
@@ -10,11 +9,14 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Items)
+    @if (Items is not null)
     {
-        <tr>
-            @Row(item)
-        </tr>
+        @foreach (var item in Items)
+        {
+            <tr>
+                @Row(item)
+            </tr>
+        }
     }
     </tbody>
     <tfoot>

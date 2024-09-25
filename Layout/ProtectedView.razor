@@ -1,0 +1,17 @@
+@using GameStore.Shared.Components
+@inject IAuthenticationService AuthenticationService
+
+@if (userInfoResponse.IsSuccess)
+{
+    @AuthorizedView(userInfoResponse.Data!)
+}
+else if (userInfoResponse.IsFailed)
+{
+    @UnauthorizedView
+}
+else
+{
+    <Loading/>
+}
+
+@userInfoResponse.Message

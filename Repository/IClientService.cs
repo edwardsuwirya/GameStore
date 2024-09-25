@@ -1,8 +1,9 @@
 using GameStore.Models;
+using GameStore.Shared.Helpers;
 
 namespace GameStore.Repository;
 
 public interface IClientService
 {
-    public Client[] GetClient();
+    public Task<ResponseWrapper<Client[]>>  GetClient();
 }

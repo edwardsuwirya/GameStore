@@ -1,6 +1,4 @@
-using GameStore.Models;
-
-namespace GameStore.Shared;
+namespace GameStore.Models;
 
 public class GenreDictionary
 {

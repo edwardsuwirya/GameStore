@@ -1,3 +1,4 @@
+using GameStore.Shared.Navigation;
 using Microsoft.AspNetCore.Components;
 
 namespace GameStore.Pages.Game;
@@ -5,21 +6,27 @@ namespace GameStore.Pages.Game;
 public partial class EditGame : ComponentBase
 {
     [Parameter] public int? Id { get; set; }
+    private bool isLoading;
+    private bool isSubmitting;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        isLoading = true;
         if (Id is not null)
         {
-            var foundGame = GameService.GetGameById(Id.Value);
-            game = new Models.Game
+            var foundGame = await GameService.GetGameById(Id.Value);
+            if (foundGame.IsSuccess)
             {
-                Id = foundGame.Id,
-                Name = foundGame.Name,
-                Genre = foundGame.Genre,
-                Price = foundGame.Price,
-                ReleaseDate = foundGame.ReleaseDate
-            };
-            title = $"Edit {game.Name}";
+                game = new Models.Game
+                {
+                    Id = foundGame.Data.Id,
+                    Name = foundGame.Data.Name,
+                    Genre = foundGame.Data.Genre,
+                    Price = foundGame.Data.Price,
+                    ReleaseDate = foundGame.Data.ReleaseDate
+                };
+                title = $"Edit {game.Name}";
+            }
         }
         else
         {
@@ -31,27 +38,30 @@ public partial class EditGame : ComponentBase
             };
             title = "New Game";
         }
+
+        isLoading = false;
     }
 
     private Models.Game? game;
     private string title = string.Empty;
 
-    private void HandleSubmit()
+    private async void HandleSubmit()
     {
+        isSubmitting = true;
         if (game!.Id == 0)
         {
-            GameService.AddGame(game);
+            await GameService.AddGame(game);
         }
         else
         {
-            GameService.UpdateGame(game);
+            await GameService.UpdateGame(game);
         }
 
-        NavManager.NavigateTo("/Game");
+        NavManager.NavigateTo(PageRoute.Game);
     }
 
     private void Cancel()
     {
-        NavManager.NavigateTo("/Game");
+        NavManager.NavigateTo(PageRoute.Game);
     }
 }

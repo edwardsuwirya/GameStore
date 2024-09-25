@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using GameStore;
@@ -10,17 +11,21 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+builder.Services.AddBlazoredLocalStorage();
+
 void ConfigureCommonServices(IServiceCollection services)
 {
     services.AddSingleton<ClientDataSource>();
     services.AddSingleton<GameDataSource>();
     services.AddScoped<IClientService, ClientService>();
     services.AddScoped<IGameService, GameService>();
-    services.AddScoped<IAccountService, AccountService>();
+    services.AddScoped<IAuthenticationService, AuthenticationService>();
 }
 
 void ConfigureStateServices(IServiceCollection services)
 {
+    services.AddScoped<LocalStorageService>();
+    // AuthState is not needed anymore, already handled by local storage service
     services.AddSingleton<AuthState>();
 }
 

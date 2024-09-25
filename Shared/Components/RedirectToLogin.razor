@@ -1,9 +1,11 @@
+@using GameStore.Shared.Navigation
+
 @code {
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        NavManager.NavigateTo("/Authentication/Login");
+        NavManager.NavigateTo(PageRoute.Login);
     }
 
 }

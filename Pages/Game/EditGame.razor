@@ -1,15 +1,14 @@
-@page "/Game/New"
-@page "/Game/{id:int}"
+@attribute [Route(PageRoute.NewGame)]
+@attribute [Route(PageRoute.Game + "/{id:int}")]
 @using GameStore.Shared.Components
+@using GameStore.Shared.Navigation
 <PageTitle>@title</PageTitle>
 
 <h1>Game Catalog</h1>
 <h3>@title</h3>
-@if (game is null)
+@if (isLoading)
 {
-    <p>
-        <em>Loading...</em>
-    </p>
+    <Loading/>
 }
 else
 {
@@ -34,8 +33,8 @@ else
                     <label for="releaseDate" class="form-label">Release Date:</label>
                     <InputDate id="releaseDate" @bind-Value="game.ReleaseDate" class="form-control"></InputDate>
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+                <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Save</button>
+                <button type="button" class="btn btn-secondary" @onclick="@Cancel" disabled="@isSubmitting">Cancel</button>
             </EditForm>
         </div>
     </div>

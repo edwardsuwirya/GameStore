@@ -12,8 +12,8 @@ public partial class ClientList : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(2000);
-        Clients = ClientService.GetClient();
+        var clients = await ClientService.GetClient();
+        Clients = clients.Data;
     }
 
     private void CreateClient()

@@ -1,0 +1,15 @@
+@using GameStore.Shared.Components
+<PageTitle>@Title</PageTitle>
+<h2>@Title</h2>
+<CascadingValue Value="this">
+    <CascadingValue Value="loadingVals">
+        @if (loadingVals.IsLoading)
+        {
+            <Loading/>
+        }
+        else
+        {
+            @Content
+        }
+    </CascadingValue>
+</CascadingValue>

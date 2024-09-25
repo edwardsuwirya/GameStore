@@ -1,9 +1,9 @@
-﻿@page "/Game"
-@using GameStore.Shared
+﻿@using GameStore.Models
 @using GameStore.Shared.Components
-<PageTitle>Game Catalog</PageTitle>
+@using GameStore.Shared.Navigation
+@attribute [Route(PageRoute.Game)]
 
-@if (games is null)
+@if (isLoading)
 {
     <Loading/>
 }
@@ -26,20 +26,20 @@ else
             <th>Release Date</th>
             <th></th>
         </Header>
-        <Row>
-            <td>@context.Id</td>
-            <td>@context.Name</td>
-            <td>@GenreDictionary.GenreDescriptionString(context.Genre)</td>
-            <td>@context.Price</td>
-            <td>@context.ReleaseDate.ToString("MM/dd/yyyy")</td>
+        <Row Context="rowContext">
+            <td>@rowContext.Id</td>
+            <td>@rowContext.Name</td>
+            <td>@GenreDictionary.GenreDescriptionString(rowContext.Genre)</td>
+            <td>@rowContext.Price</td>
+            <td>@rowContext.ReleaseDate.ToString("MM/dd/yyyy")</td>
             <td style="white-space: nowrap">
-                <button class="btn btn-primary" @onclick="() => EditGame(context.Id)">
+                <button class="btn btn-primary" @onclick="() => EditGame(rowContext.Id)">
                     <i class="oui--pencil"></i>
                 </button>
                 <button class="btn btn-danger"
                         data-bs-toggle="modal"
                         data-bs-target="#deleteModal"
-                        @onclick="() => currentGame = context">
+                        @onclick="() => currentGame = rowContext">
                     <i class="oui--eraser"></i>
                 </button>
             </td>

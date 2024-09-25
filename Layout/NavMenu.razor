@@ -1,4 +1,5 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using GameStore.Shared.Navigation
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">
             Game
@@ -26,10 +27,16 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Client
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <a class="nav-link" @onclick="OnLogout">
+                <span class="bi bi-sign-out" aria-hidden="true"></span> Logout, @userInfo
+            </a>
+        </div>
     </nav>
 </div>
 
 @code {
+    [Parameter] public string userInfo { get; set; } = string.Empty;
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -37,6 +44,11 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void OnLogout()
+    {
+        NavManager.NavigateTo(PageRoute.Logout, forceLoad: true);
     }
 
 }
