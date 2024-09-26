@@ -5,12 +5,14 @@ using GameStore;
 using GameStore.Data;
 using GameStore.Repository;
 using GameStore.Shared.States;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 
 void ConfigureCommonServices(IServiceCollection services)
@@ -24,9 +26,8 @@ void ConfigureCommonServices(IServiceCollection services)
 
 void ConfigureStateServices(IServiceCollection services)
 {
-    services.AddScoped<AuthState>();
+    services.AddScoped<AuthenticationStateProvider, AuthState>();
     services.AddScoped<LocalStorage>();
-    
 }
 
 ConfigureCommonServices(builder.Services);

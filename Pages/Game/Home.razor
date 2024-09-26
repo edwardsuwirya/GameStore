@@ -1,7 +1,9 @@
 ﻿@using GameStore.Models
 @using GameStore.Shared.Components
 @using GameStore.Shared.Navigation
+@using Microsoft.AspNetCore.Authorization
 @attribute [Route(PageRoute.Game)]
+@attribute [Authorize]
 
 <PageTitle>Game</PageTitle>
 <h2>Game Catalog</h2>

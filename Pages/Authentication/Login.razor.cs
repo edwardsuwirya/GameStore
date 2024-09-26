@@ -1,6 +1,7 @@
 using GameStore.Models;
 using GameStore.Shared.Helpers;
 using GameStore.Shared.Navigation;
+using GameStore.Shared.States;
 using Microsoft.AspNetCore.Components;
 
 namespace GameStore.Pages.Authentication;
@@ -30,12 +31,13 @@ public partial class Login : ComponentBase
                 break;
             case ResponseStatus.Success:
                 isLoading = false;
-                await AuthState.UpdateAuthenticationState(client.Data);
+                var authStateProvider = (AuthState)AuthStateProvider;
+                await authStateProvider.UpdateAuthenticationState(client.Data);
                 NavManager.NavigateTo(PageRoute.Game, forceLoad: true);
                 break;
             case ResponseStatus.Failed:
                 isLoading = false;
-                // NavManager.NavigateTo(PageRoute.Login);
+                NavManager.NavigateTo(PageRoute.Login);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
