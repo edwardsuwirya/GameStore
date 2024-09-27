@@ -1,15 +1,14 @@
 @using GameStore.Shared.Components
+@using GameStore.Shared.States
+@inject LoadingState LoadingState
+
 <PageTitle>@Title</PageTitle>
 <h2>@Title</h2>
-<CascadingValue Value="this">
-    <CascadingValue Value="loadingVals">
-        @if (loadingVals.IsLoading)
-        {
-            <Loading/>
-        }
-        else
-        {
-            @Content
-        }
-    </CascadingValue>
-</CascadingValue>
+@if (LoadingState.IsLoading)
+{
+    <Loading/>
+}
+else
+{
+    @ChildContent
+}

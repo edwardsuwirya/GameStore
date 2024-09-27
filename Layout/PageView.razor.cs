@@ -1,27 +1,20 @@
-using GameStore.Shared.Helpers;
 using Microsoft.AspNetCore.Components;
 
 namespace GameStore.Layout;
 
-public partial class PageView : ComponentBase
+public partial class PageView : ComponentBase, IDisposable
 {
-    [Parameter] public RenderFragment Content { get; set; }
-    public LoadingVals loadingVals;
+    [Parameter] public RenderFragment ChildContent { get; set; }
 
     [Parameter] public string Title { get; set; }
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-        loadingVals = new()
-        {
-            IsLoading = false,
-            ValueChanged = IsLoadingChanged
-        };
+        LoadingState.OnChange += StateHasChanged;
     }
 
-    public void IsLoadingChanged()
+    public void Dispose()
     {
-        StateHasChanged();
+        LoadingState.OnChange -= StateHasChanged;
     }
 }

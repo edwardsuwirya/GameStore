@@ -2,14 +2,14 @@
 @using GameStore.Shared.Components
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
-<PageTitle>Client</PageTitle>
-<h1>Client</h1>
-<ClientList>
-    <NullClientList>
-        <Loading/>
-    </NullClientList>
-    <EmptyClientList>
-        <br/>
-        <span>No clients to display</span>
-    </EmptyClientList>
-</ClientList>
+<PageView Title="Client">
+    <ClientList>
+        <NullClientList>
+            <Loading/>
+        </NullClientList>
+        <EmptyClientList>
+            <br/>
+            <span>No clients to display</span>
+        </EmptyClientList>
+    </ClientList>    
+</PageView>

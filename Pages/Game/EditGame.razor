@@ -4,16 +4,7 @@
 @using GameStore.Shared.Navigation
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
-<PageTitle>@title</PageTitle>
-
-<h1>Game Catalog</h1>
-<h3>@title</h3>
-@if (isLoading)
-{
-    <Loading/>
-}
-else
-{
+<PageView Title="Update Game">
     <div class="row">
         <div class="col-sm-4">
             <EditForm Model="game" OnValidSubmit="HandleSubmit">
@@ -40,4 +31,4 @@ else
             </EditForm>
         </div>
     </div>
-}
+</PageView>

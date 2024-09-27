@@ -28,6 +28,7 @@ void ConfigureStateServices(IServiceCollection services)
 {
     services.AddScoped<AuthenticationStateProvider, AuthState>();
     services.AddScoped<LocalStorage>();
+    services.AddScoped<LoadingState>();
 }
 
 ConfigureCommonServices(builder.Services);

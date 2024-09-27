@@ -5,14 +5,7 @@
 @attribute [Route(PageRoute.Game)]
 @attribute [Authorize]
 
-<PageTitle>Game</PageTitle>
-<h2>Game Catalog</h2>
-@if (isLoading)
-{
-    <Loading/>
-}
-else
-{
+<PageView Title="Game Catalog">
     <CommonGrid Items="games">
         <ActionHeader>
             <div class="row mb-4">
@@ -49,4 +42,4 @@ else
             </td>
         </Row>
     </CommonGrid>
-}
+</PageView>
