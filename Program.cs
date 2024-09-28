@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using GameStore;
 using GameStore.Data;
 using GameStore.Repository;
+using GameStore.Shared.Helpers;
+using GameStore.Shared.Services;
 using GameStore.Shared.States;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -22,6 +24,15 @@ void ConfigureCommonServices(IServiceCollection services)
     services.AddScoped<IClientService, ClientService>();
     services.AddScoped<IGameService, GameService>();
     services.AddScoped<IAuthenticationService, AuthenticationService>();
+    services.AddScoped<IHttpService, HttpService>();
+
+    services.AddScoped(x =>
+    {
+        var apiUrl = new Uri(builder.Configuration["apiUrl"]);
+        if (builder.Configuration["fakeBackend"] != "true") return new HttpClient { BaseAddress = apiUrl };
+        var fakeBackendHandler = new FakeBackendHandler();
+        return new HttpClient(fakeBackendHandler) { BaseAddress = apiUrl };
+    });
 }
 
 void ConfigureStateServices(IServiceCollection services)

@@ -24,6 +24,10 @@
                     <div class="d-grid">
                         <button type="button" class="btn btn-primary btn-lg" @onclick="HandleSubmit" disabled=@isLoading>Login</button>
                     </div>
+                    @if (!string.IsNullOrEmpty(error))
+                    {
+                        <div class="alert alert-danger mt-3 mb-0">@error</div>
+                    }
                 </EditForm>
 
                 <a href="#" class="text-center new-account">Create an account </a>

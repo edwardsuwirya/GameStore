@@ -10,8 +10,14 @@ public partial class Login : ComponentBase
 {
     private UserAccess userAccessCredential;
     private bool isLoading;
+    private string error;
 
     protected override void OnInitialized()
+    {
+        CreateEmptyUserAccessCredential();
+    }
+
+    private void CreateEmptyUserAccessCredential()
     {
         userAccessCredential = new UserAccess
         {
@@ -22,22 +28,23 @@ public partial class Login : ComponentBase
 
     private async void HandleSubmit()
     {
+        error = string.Empty;
         isLoading = true;
-        await Task.Delay(1000);
         var client = await AuthenticationService.Login(userAccessCredential);
         switch (client.status)
         {
             case ResponseStatus.Loading:
                 break;
             case ResponseStatus.Success:
-                isLoading = false;
                 var authStateProvider = (AuthState)AuthStateProvider;
                 await authStateProvider.UpdateAuthenticationState(client.Data);
                 NavManager.NavigateTo(PageRoute.Game, forceLoad: true);
                 break;
             case ResponseStatus.Failed:
                 isLoading = false;
-                NavManager.NavigateTo(PageRoute.Login);
+                error = client.Message;
+                CreateEmptyUserAccessCredential();
+                StateHasChanged();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
