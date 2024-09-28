@@ -1,8 +1,9 @@
-using System.Security.Claims;
 using GameStore.Dtos;
 using GameStore.Models;
 using GameStore.Repository;
 using GameStore.Shared.Helpers;
+using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace GameStore.Shared.States;
@@ -29,6 +30,8 @@ public class AuthState(LocalStorage localStorage) : AuthenticationStateProvider
         {
             await localStorage.SetToken(token, "auth-token");
             var client = AuthenticationService.DecodeToken(token);
+            string clientJson = JsonSerializer.Serialize(client);
+            await localStorage.SetToken(clientJson, "client"); // checking purpose
             var getUserClaim = new CustomUserClaims(client.Id, client.FirstName, client.Email, "User");
             claimsPrincipal = SetClaimPrincipal(getUserClaim);
         }

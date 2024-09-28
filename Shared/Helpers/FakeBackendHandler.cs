@@ -53,7 +53,7 @@ public class FakeBackendHandler : HttpClientHandler
             {
                 Id = 1,
                 FirstName = "Edo",
-                LastName = "",
+                LastName = "S",
                 Address = "123 Main Street",
                 Email = "edo@gmail.com",
                 Phone = "123456"
@@ -92,12 +92,12 @@ public class FakeBackendHandler : HttpClientHandler
         {
             Subject = new ClaimsIdentity(
             [
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FirstName),
+                new Claim(ClaimTypes.Name, user.Id.ToString()),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Surname, user.LastName.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim("LastName", user.LastName),
-                new Claim("Address", user.Address),
-                new Claim("Phone", user.Phone)
+                new Claim(ClaimTypes.StreetAddress, user.Address),
+                new Claim(ClaimTypes.MobilePhone, user.Phone)
             ]),
             Expires = DateTime.UtcNow.Add(TokenExpiration),
             Issuer = Issuer,
@@ -106,6 +106,7 @@ public class FakeBackendHandler : HttpClientHandler
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        var tokenString = tokenHandler.WriteToken(token);
+        return tokenString;
     }
 }

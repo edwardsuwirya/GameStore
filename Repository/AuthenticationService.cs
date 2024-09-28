@@ -36,12 +36,12 @@ public class AuthenticationService(IHttpService httpService, LocalStorage localS
 
         var client = new Client
         {
-            Id = int.TryParse(jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0,
-            FirstName = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value ?? string.Empty,
-            LastName = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "LastName")?.Value ?? string.Empty,
-            Email = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? string.Empty,
-            Address = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "Address")?.Value ?? string.Empty,
-            Phone = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "Phone")?.Value ?? string.Empty
+            Id = int.TryParse(jsonToken.Claims.FirstOrDefault(claim => claim.Type == "unique_name")?.Value, out var id) ? id : 0,
+            FirstName = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "given_name")?.Value ?? string.Empty,
+            LastName = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "family_name")?.Value ?? string.Empty,
+            Email = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value ?? string.Empty,
+            Address = jsonToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.StreetAddress)?.Value ?? string.Empty,
+            Phone = jsonToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.MobilePhone)?.Value ?? string.Empty
         };
 
         return client;
