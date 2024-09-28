@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using GameStore.Dtos;
 using GameStore.Models;
+using GameStore.Repository;
 using GameStore.Shared.Helpers;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -12,33 +13,31 @@ public class AuthState(LocalStorage localStorage) : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var stringToken = await localStorage.GetToken("auth-token");
-        if (string.IsNullOrEmpty(stringToken)) return await Task.FromResult(new AuthenticationState(anonymous));
+        var token = await localStorage.GetToken("auth-token");
+        if (string.IsNullOrEmpty(token)) return await Task.FromResult(new AuthenticationState(anonymous));
 
-        var clientToken = Serialization.Deserialize<Client>(stringToken);
-        if (clientToken == null) return await Task.FromResult(new AuthenticationState(anonymous));
-
-        var getUserClaim = new CustomUserClaims(clientToken.Id, clientToken.FirstName, clientToken.Email, "User");
+        var client = AuthenticationService.DecodeToken(token);
+        var getUserClaim = new CustomUserClaims(client.Id, client.FirstName, client.Email, "User");
         var claimsPrincipal = SetClaimPrincipal(getUserClaim);
         return await Task.FromResult(new AuthenticationState(claimsPrincipal));
     }
 
-    public async Task UpdateAuthenticationState(Client? client)
+    public async Task UpdateAuthenticationState(string token)
     {
-        var claimPrincipal = new ClaimsPrincipal();
-        if (client != null)
+        var claimsPrincipal = new ClaimsPrincipal();
+        if (!string.IsNullOrEmpty(token))
         {
-            var serializedToken = Serialization.Serialize(client);
-            await localStorage.SetToken(serializedToken, "auth-token");
+            await localStorage.SetToken(token, "auth-token");
+            var client = AuthenticationService.DecodeToken(token);
             var getUserClaim = new CustomUserClaims(client.Id, client.FirstName, client.Email, "User");
-            claimPrincipal = SetClaimPrincipal(getUserClaim);
+            claimsPrincipal = SetClaimPrincipal(getUserClaim);
         }
         else
         {
             await localStorage.RemoveToken("auth-token");
         }
 
-        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimPrincipal)));
+        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
     }
 
     private static ClaimsPrincipal SetClaimPrincipal(CustomUserClaims claims)

@@ -94,7 +94,10 @@ public class FakeBackendHandler : HttpClientHandler
             [
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FirstName),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("LastName", user.LastName),
+                new Claim("Address", user.Address),
+                new Claim("Phone", user.Phone)
             ]),
             Expires = DateTime.UtcNow.Add(TokenExpiration),
             Issuer = Issuer,
