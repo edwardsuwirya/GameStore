@@ -1,11 +1,19 @@
 using System.Net;
 using System.Text;
 using GameStore.Models;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GameStore.Shared.Helpers;
 
 public class FakeBackendHandler : HttpClientHandler
 {
+    private const string SecretKey = "h7de3j9y5k2l1m8n4p6q0r7s9t2u5v8w1x4z6a3b5c8d0f2g4i6j9k1l3m";
+    private const string Issuer = "GameStore";
+    private const string Audience = "GameStoreUsers";
+    private static readonly TimeSpan TokenExpiration = TimeSpan.FromHours(1);
+
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
@@ -40,7 +48,8 @@ public class FakeBackendHandler : HttpClientHandler
             if (!body.UserName.Equals("edo") || !body.Password.Equals("123456"))
                 return await Error("Username or password is incorrect");
 
-            return await Ok(new Client
+            var token = GenerateJwtToken(new Client
+
             {
                 Id = 1,
                 FirstName = "Edo",
@@ -49,6 +58,7 @@ public class FakeBackendHandler : HttpClientHandler
                 Email = "edo@gmail.com",
                 Phone = "123456"
             });
+            return await Ok(new { token });
         }
 
         async Task<HttpResponseMessage> Ok(object? body = null)
@@ -73,5 +83,26 @@ public class FakeBackendHandler : HttpClientHandler
 
             return response;
         }
+    }
+    private static string GenerateJwtToken(Client user)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(SecretKey);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(
+            [
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FirstName),
+                new Claim(ClaimTypes.Email, user.Email)
+            ]),
+            Expires = DateTime.UtcNow.Add(TokenExpiration),
+            Issuer = Issuer,
+            Audience = Audience,
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 }
