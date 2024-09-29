@@ -92,7 +92,7 @@ public class FakeBackendHandler : HttpClientHandler
         {
             Subject = new ClaimsIdentity(
             [
-                new Claim(ClaimTypes.Name, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),

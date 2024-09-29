@@ -1,6 +1,6 @@
 using GameStore.Models;
 using GameStore.Shared.Helpers;
-using GameStore.Dtos;
+using GameStore.Shared.Responses;
 
 namespace GameStore.Repository;
 
