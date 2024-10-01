@@ -2,7 +2,7 @@ using Blazored.LocalStorage;
 
 namespace GameStore.Shared.States;
 
-public class LocalStorage(ILocalStorageService localStorageService)
+public class LocalStorage(ILocalStorageService localStorageService) : ILocalStorage
 {
     public async Task<string?> GetToken(string storageKey)
     {

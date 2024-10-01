@@ -25,6 +25,7 @@ void ConfigureCommonServices(IServiceCollection services)
     services.AddScoped<IGameService, GameService>();
     services.AddScoped<IAuthenticationService, AuthenticationService>();
     services.AddScoped<IHttpService, HttpService>();
+    services.AddScoped<ILocalStorage, LocalStorage>();
 
     services.AddScoped(x =>
     {

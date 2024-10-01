@@ -1,3 +1,4 @@
+using GameStore.Dtos;
 using GameStore.Models;
 using GameStore.Shared.Helpers;
 using GameStore.Shared.Navigation;
@@ -30,19 +31,19 @@ public partial class Login : ComponentBase
     {
         error = string.Empty;
         isLoading = true;
-        var client = await AuthenticationService.Login(userAccessCredential);
-        switch (client.status)
+        var loginResponse = await AuthenticationService.Login(userAccessCredential);
+        switch (loginResponse.status)
         {
             case ResponseStatus.Loading:
                 break;
             case ResponseStatus.Success:
                 var authStateProvider = (AuthState)AuthStateProvider;
-                await authStateProvider.UpdateAuthenticationState(client.Data);
+                await authStateProvider.UpdateAuthenticationState(loginResponse.Data.Token);
                 NavManager.NavigateTo(PageRoute.Game, forceLoad: true);
                 break;
             case ResponseStatus.Failed:
                 isLoading = false;
-                error = client.Message;
+                error = loginResponse.Message;
                 CreateEmptyUserAccessCredential();
                 StateHasChanged();
                 break;
