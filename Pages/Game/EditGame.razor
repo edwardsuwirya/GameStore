@@ -4,7 +4,7 @@
 @using GameStore.Shared.Navigation
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
-<PageView Title="Update Game">
+<PageView Title="@title">
     <div class="row">
         <div class="col-sm-4">
             <EditForm Model="game" OnValidSubmit="HandleSubmit">

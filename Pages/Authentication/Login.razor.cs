@@ -1,6 +1,7 @@
 using GameStore.Models;
-using GameStore.Shared.Helpers;
+using GameStore.Shared.Errors;
 using GameStore.Shared.Navigation;
+using GameStore.Shared.Responses;
 using GameStore.Shared.States;
 using Microsoft.AspNetCore.Components;
 
@@ -31,23 +32,27 @@ public partial class Login : ComponentBase
         error = string.Empty;
         isLoading = true;
         var client = await AuthenticationService.Login(userAccessCredential);
-        switch (client.status)
+        client.Match(onSuccess: onSuccess, onFailure: onFailure);
+    }
+
+    private void onFailure(AppError errorMessage)
+    {
+        if (errorMessage.Code == ErrorCode.AppError)
         {
-            case ResponseStatus.Loading:
-                break;
-            case ResponseStatus.Success:
-                var authStateProvider = (AuthState)AuthStateProvider;
-                await authStateProvider.UpdateAuthenticationState(client.Data);
-                NavManager.NavigateTo(PageRoute.Game, forceLoad: true);
-                break;
-            case ResponseStatus.Failed:
-                isLoading = false;
-                error = client.Message;
-                CreateEmptyUserAccessCredential();
-                StateHasChanged();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            NavManager.NavigateTo(PageRoute.Error, forceLoad: true);
         }
+
+        isLoading = false;
+        error = errorMessage.Description;
+        CreateEmptyUserAccessCredential();
+        StateHasChanged();
+    }
+
+    private async void onSuccess(Models.Client data)
+    {
+        var authStateProvider = (AuthState)AuthStateProvider;
+        await authStateProvider.UpdateAuthenticationState(data);
+        isLoading = false;
+        NavManager.NavigateTo(PageRoute.Game, forceLoad: true);
     }
 }

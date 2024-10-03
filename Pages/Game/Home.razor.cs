@@ -1,4 +1,6 @@
+using GameStore.Shared.Errors;
 using GameStore.Shared.Navigation;
+using GameStore.Shared.Responses;
 using Microsoft.AspNetCore.Components;
 
 namespace GameStore.Pages.Game;
@@ -29,20 +31,38 @@ public partial class Home : ComponentBase
     private async void DeleteGame(int id)
     {
         LoadingState.SetOnLoading(true);
-        await GameService.DeleteGame(id);
-        GetGames();
+        var result = await GameService.DeleteGame(id);
+        result.Match(onSuccess: OnSuccessDeleteGame, onFailure: OnFailure);
     }
 
     private async void GetGames()
     {
         LoadingState.SetOnLoading(true);
         var gameList = await GameService.GetGames();
-        if (gameList.IsSuccess)
+        gameList.Match(onSuccess: OnSuccessGetGames, onFailure: OnFailure);
+    }
+
+    private void OnFailure(AppError errorMessage)
+    {
+        if (errorMessage.Code == ErrorCode.AppError)
         {
-            LoadingState.SetOnLoading(false);
-            games = gameList.Data;
-            StateHasChanged();
+            NavManager.NavigateTo(PageRoute.Error, forceLoad: true);
         }
+
+        LoadingState.SetOnLoading(false);
+        StateHasChanged();
+    }
+
+    private void OnSuccessDeleteGame(int id)
+    {
+        GetGames();
+    }
+
+    private void OnSuccessGetGames(Models.Game[] listGame)
+    {
+        LoadingState.SetOnLoading(false);
+        games = listGame;
+        StateHasChanged();
     }
 
     private void CreateGame()

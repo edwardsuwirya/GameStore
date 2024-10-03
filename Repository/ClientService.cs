@@ -1,14 +1,13 @@
-using GameStore.Data;
 using GameStore.Models;
-using GameStore.Shared.Helpers;
+using GameStore.Shared.Responses;
+using GameStore.Shared.Services;
 
 namespace GameStore.Repository;
 
-public class ClientService(ClientDataSource dataSource) : IClientService
+public class ClientService(IHttpService httpService) : IClientService
 {
-    public async Task<ResponseWrapper<Client[]>> GetClient()
-    {
-        await Task.Delay(2000).ConfigureAwait(false);
-        return ResponseWrapper<Client[]>.Success([]);
-    }
+    private const string BasePath = "/api/v1/clients";
+
+    public Task<ResponseWrapper<Client[]>> GetClient() =>
+        httpService.Get<Client[]>(BasePath);
 }

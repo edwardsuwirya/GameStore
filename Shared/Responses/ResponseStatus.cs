@@ -1,4 +1,4 @@
-namespace GameStore.Shared.Helpers;
+namespace GameStore.Shared.Responses;
 
 public enum ResponseStatus
 {

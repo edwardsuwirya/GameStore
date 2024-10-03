@@ -1,4 +1,6 @@
+using GameStore.Shared.Errors;
 using GameStore.Shared.Navigation;
+using GameStore.Shared.Responses;
 using Microsoft.AspNetCore.Components;
 
 namespace GameStore.Pages.Game;
@@ -6,27 +8,30 @@ namespace GameStore.Pages.Game;
 public partial class EditGame : ComponentBase
 {
     [Parameter] public int? Id { get; set; }
-    private bool isLoading;
     private bool isSubmitting;
+    private Models.Game? game;
+    private string title = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
-        isLoading = true;
+        LoadingState.SetOnLoading(true);
         if (Id is not null)
         {
-            var foundGame = await GameService.GetGameById(Id.Value);
-            if (foundGame.IsSuccess)
+            var foundGameResult = await GameService.GetGameById(Id.Value);
+            foundGameResult.Match(onSuccess: (foundGame) =>
             {
                 game = new Models.Game
                 {
-                    Id = foundGame.Data.Id,
-                    Name = foundGame.Data.Name,
-                    Genre = foundGame.Data.Genre,
-                    Price = foundGame.Data.Price,
-                    ReleaseDate = foundGame.Data.ReleaseDate
+                    Id = foundGame.Id,
+                    Name = foundGame.Name,
+                    Genre = foundGame.Genre,
+                    Price = foundGame.Price,
+                    ReleaseDate = foundGame.ReleaseDate
                 };
                 title = $"Edit {game.Name}";
-            }
+                LoadingState.SetOnLoading(false);
+                StateHasChanged();
+            }, onFailure: (_) => NavManager.NavigateTo(PageRoute.Error, forceLoad: true));
         }
         else
         {
@@ -37,27 +42,41 @@ public partial class EditGame : ComponentBase
                 ReleaseDate = DateTime.UtcNow
             };
             title = "New Game";
+            LoadingState.SetOnLoading(false);
+            StateHasChanged();
         }
-
-        isLoading = false;
     }
-
-    private Models.Game? game;
-    private string title = string.Empty;
 
     private async void HandleSubmit()
     {
         isSubmitting = true;
+        ResponseWrapper<Models.Game> result;
         if (game!.Id == 0)
         {
-            await GameService.AddGame(game);
+            result = await GameService.AddGame(game);
         }
         else
         {
-            await GameService.UpdateGame(game);
+            result = await GameService.UpdateGame(game);
         }
 
+        result.Match(onSuccess: OnSuccess, onFailure: OnFailure);
+    }
+
+    private void OnSuccess(Models.Game game)
+    {
         NavManager.NavigateTo(PageRoute.Game);
+    }
+
+    private void OnFailure(AppError errorMessage)
+    {
+        if (errorMessage.Code == ErrorCode.AppError)
+        {
+            NavManager.NavigateTo(PageRoute.Error, forceLoad: true);
+        }
+
+        isSubmitting = false;
+        StateHasChanged();
     }
 
     private void Cancel()
