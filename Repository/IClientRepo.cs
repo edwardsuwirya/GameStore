@@ -4,7 +4,7 @@ using GameStore.Shared.Responses;
 
 namespace GameStore.Repository;
 
-public interface IAuthenticationService
+public interface IClientRepo
 {
-    public Task<ResponseWrapper<Client>> Login(UserAccess userAccess);
+    public Task<ResponseWrapper<Client[]>>  GetClient();
 }

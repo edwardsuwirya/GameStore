@@ -17,7 +17,7 @@ public partial class EditGame : ComponentBase
         LoadingState.SetOnLoading(true);
         if (Id is not null)
         {
-            var foundGameResult = await GameService.GetGameById(Id.Value);
+            var foundGameResult = await GetGameService.Execute(Id.Value);
             foundGameResult.Match(onSuccess: (foundGame) =>
             {
                 game = new Models.Game
@@ -53,11 +53,11 @@ public partial class EditGame : ComponentBase
         ResponseWrapper<Models.Game> result;
         if (game!.Id == 0)
         {
-            result = await GameService.AddGame(game);
+            result = await AddGameService.Execute(game);
         }
         else
         {
-            result = await GameService.UpdateGame(game);
+            result = await UpdateGameService.Execute(game);
         }
 
         result.Match(onSuccess: OnSuccess, onFailure: OnFailure);
@@ -70,13 +70,15 @@ public partial class EditGame : ComponentBase
 
     private void OnFailure(AppError errorMessage)
     {
-        if (errorMessage.Code == ErrorCode.AppError)
+        if (errorMessage.Code is ErrorCode.GeneralError or ErrorCode.PathNotFound)
         {
             NavManager.NavigateTo(PageRoute.Error, forceLoad: true);
         }
-
-        isSubmitting = false;
-        StateHasChanged();
+        else
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
     }
 
     private void Cancel()

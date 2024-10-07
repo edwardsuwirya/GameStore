@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GameStore.Models;
 using GameStore.Shared.Errors;
+using GameStore.Shared.Errors.Auth;
+using GameStore.Shared.Errors.Game;
 using GameStore.Shared.Responses;
 
 namespace GameStore.Shared.Helpers;
@@ -65,7 +67,7 @@ public class FakeBackendHandler : HttpClientHandler
                 return await DeleteGame();
 
             return await Error(HttpStatusCode.NotFound,
-                ResponseWrapper<string>.Fail(AppError.DataNotFound()));
+                ResponseWrapper<string>.Fail(AppError.PathError()));
         }
 
         async Task<HttpResponseMessage> Authenticate()
@@ -76,7 +78,7 @@ public class FakeBackendHandler : HttpClientHandler
 
             if (!body.UserName.Equals("edo") || !body.Password.Equals("123456"))
                 return await Error(HttpStatusCode.Unauthorized,
-                    ResponseWrapper<Client>.Fail(AppError.InvalidUser()));
+                    ResponseWrapper<Client>.Fail(AuthErrors.UnauthorizedUser()));
 
             var client = new Client
             {
@@ -104,7 +106,7 @@ public class FakeBackendHandler : HttpClientHandler
             if (game == null)
             {
                 return await Error(HttpStatusCode.NotFound,
-                    ResponseWrapper<Game>.Fail(AppError.DataNotFound("Game Not Found")));
+                    ResponseWrapper<Game>.Fail(GameErrors.GameNotFound()));
             }
 
             return await Ok(ResponseWrapper<Game>.Success(game));
@@ -129,7 +131,7 @@ public class FakeBackendHandler : HttpClientHandler
             if (game == null)
             {
                 return await Error(HttpStatusCode.NotFound,
-                    ResponseWrapper<Game>.Fail(AppError.DataNotFound("Game Not Found")));
+                    ResponseWrapper<Game>.Fail(GameErrors.GameNotFound()));
             }
 
             var bodyJson = await request.Content.ReadAsStringAsync();
@@ -140,7 +142,7 @@ public class FakeBackendHandler : HttpClientHandler
             game.ReleaseDate = body.ReleaseDate;
             return await Ok(ResponseWrapper<Game>.Success(game));
             // return await Error(HttpStatusCode.InternalServerError,
-                // ResponseWrapper<Game>.Fail(AppError.GeneralError("Insufficient Storage")));
+            // ResponseWrapper<Game>.Fail(AppError.GeneralError("Insufficient Storage")));
         }
 
         async Task<HttpResponseMessage> DeleteGame()
@@ -151,7 +153,7 @@ public class FakeBackendHandler : HttpClientHandler
             if (game == null)
             {
                 return await Error(HttpStatusCode.NotFound,
-                    ResponseWrapper<int>.Fail(AppError.DataNotFound("Game Not Found")));
+                    ResponseWrapper<int>.Fail(GameErrors.GameNotFound()));
             }
 
             games.Remove(game);

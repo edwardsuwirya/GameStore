@@ -4,7 +4,7 @@ using GameStore.Shared.Services;
 
 namespace GameStore.Repository;
 
-public class ClientService(IHttpService httpService) : IClientService
+public class ClientRepo(IHttpService httpService) : IClientRepo
 {
     private const string BasePath = "/api/v1/clients";
 

@@ -4,7 +4,7 @@ using GameStore.Shared.Responses;
 
 namespace GameStore.Repository;
 
-public interface IGameService
+public interface IGameRepo
 {
     public Task<ResponseWrapper<Game[]>> GetGames();
     public Task<ResponseWrapper<Game>> AddGame(Game game);

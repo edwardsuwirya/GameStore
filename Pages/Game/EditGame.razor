@@ -1,9 +1,14 @@
 @attribute [Route(PageRoute.NewGame)]
 @attribute [Route(PageRoute.Game + "/{id:int}")]
+@using GameStore.Services
 @using GameStore.Shared.Components
 @using GameStore.Shared.Navigation
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
+@inject GetGameService GetGameService
+@inject AddGameService AddGameService
+@inject UpdateGameService UpdateGameService
+
 <PageView Title="@title">
     <div class="row">
         <div class="col-sm-4">

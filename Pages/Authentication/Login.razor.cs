@@ -31,13 +31,13 @@ public partial class Login : ComponentBase
     {
         error = string.Empty;
         isLoading = true;
-        var client = await AuthenticationService.Login(userAccessCredential);
+        var client = await LoginService.Execute(userAccessCredential);
         client.Match(onSuccess: onSuccess, onFailure: onFailure);
     }
 
     private void onFailure(AppError errorMessage)
     {
-        if (errorMessage.Code == ErrorCode.AppError)
+        if (errorMessage.Code is ErrorCode.GeneralError or ErrorCode.PathNotFound)
         {
             NavManager.NavigateTo(PageRoute.Error, forceLoad: true);
         }
@@ -48,10 +48,8 @@ public partial class Login : ComponentBase
         StateHasChanged();
     }
 
-    private async void onSuccess(Models.Client data)
+    private void onSuccess(bool success)
     {
-        var authStateProvider = (AuthState)AuthStateProvider;
-        await authStateProvider.UpdateAuthenticationState(data);
         isLoading = false;
         NavManager.NavigateTo(PageRoute.Game, forceLoad: true);
     }

@@ -12,7 +12,7 @@ public partial class ClientList : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var clients = await ClientService.GetClient();
+        var clients = await GetClientService.Execute();
         Clients = clients.Data;
     }
 

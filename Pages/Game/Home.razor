@@ -1,9 +1,12 @@
 ﻿@using GameStore.Models
+@using GameStore.Services
 @using GameStore.Shared.Components
 @using GameStore.Shared.Navigation
 @using Microsoft.AspNetCore.Authorization
 @attribute [Route(PageRoute.Game)]
 @attribute [Authorize]
+@inject GetGameListService GameGameListService
+@inject DeleteGameService DeleteGameService
 
 <PageView Title="Game Catalog">
     <CommonGrid Items="games">

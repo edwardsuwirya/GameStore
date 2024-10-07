@@ -4,7 +4,7 @@ using GameStore.Shared.Services;
 
 namespace GameStore.Repository;
 
-public class GameService(IHttpService httpService) : IGameService
+public class GameRepo(IHttpService httpService) : IGameRepo
 {
     private const string BasePath = "/api/v1/games";
 

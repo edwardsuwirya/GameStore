@@ -31,26 +31,28 @@ public partial class Home : ComponentBase
     private async void DeleteGame(int id)
     {
         LoadingState.SetOnLoading(true);
-        var result = await GameService.DeleteGame(id);
+        var result = await DeleteGameService.Execute(id);
         result.Match(onSuccess: OnSuccessDeleteGame, onFailure: OnFailure);
     }
 
     private async void GetGames()
     {
         LoadingState.SetOnLoading(true);
-        var gameList = await GameService.GetGames();
+        var gameList = await GameGameListService.Execute();
         gameList.Match(onSuccess: OnSuccessGetGames, onFailure: OnFailure);
     }
 
     private void OnFailure(AppError errorMessage)
     {
-        if (errorMessage.Code == ErrorCode.AppError)
+        if (errorMessage.Code == ErrorCode.GeneralError || errorMessage.Code == ErrorCode.PathNotFound)
         {
             NavManager.NavigateTo(PageRoute.Error, forceLoad: true);
         }
-
-        LoadingState.SetOnLoading(false);
-        StateHasChanged();
+        else
+        {
+            LoadingState.SetOnLoading(false);
+            StateHasChanged();
+        }
     }
 
     private void OnSuccessDeleteGame(int id)

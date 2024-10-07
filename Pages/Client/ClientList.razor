@@ -1,5 +1,7 @@
+@using GameStore.Services
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
+@inject GetClientListService GetClientService
 @if (Clients is null)
 {
     @NullClientList

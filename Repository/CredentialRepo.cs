@@ -4,7 +4,7 @@ using GameStore.Shared.Services;
 
 namespace GameStore.Repository;
 
-public class AuthenticationService(IHttpService httpService) : IAuthenticationService
+public class CredentialRepo(IHttpService httpService) : ICredentialRepo
 {
     private const string BasePath = "/api/v1/users/authenticate";
 

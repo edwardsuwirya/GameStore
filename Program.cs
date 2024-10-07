@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using GameStore;
 using GameStore.Repository;
+using GameStore.Services;
 using GameStore.Shared.Helpers;
 using GameStore.Shared.Services;
 using GameStore.Shared.States;
@@ -16,11 +17,29 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 
+void ConfigureRepositories(IServiceCollection services)
+{
+    services.AddScoped<IClientRepo, ClientRepo>();
+    services.AddScoped<IGameRepo, GameRepo>();
+    services.AddScoped<ICredentialRepo, CredentialRepo>();
+}
+
+void ConfigureDomainServices(IServiceCollection services)
+{
+    services.AddScoped<LoginService>();
+    services.AddScoped<LogoutService>();
+    
+    services.AddScoped<GetClientListService>();
+
+    services.AddScoped<DeleteGameService>();
+    services.AddScoped<UpdateGameService>();
+    services.AddScoped<AddGameService>();
+    services.AddScoped<GetGameListService>();
+    services.AddScoped<GetGameService>();
+}
+
 void ConfigureCommonServices(IServiceCollection services)
 {
-    services.AddScoped<IClientService, ClientService>();
-    services.AddScoped<IGameService, GameService>();
-    services.AddScoped<IAuthenticationService, AuthenticationService>();
     services.AddScoped<IHttpService, HttpService>();
 
     services.AddScoped(x =>
@@ -41,5 +60,7 @@ void ConfigureStateServices(IServiceCollection services)
 }
 
 ConfigureCommonServices(builder.Services);
+ConfigureRepositories(builder.Services);
+ConfigureDomainServices(builder.Services);
 ConfigureStateServices(builder.Services);
 await builder.Build().RunAsync();

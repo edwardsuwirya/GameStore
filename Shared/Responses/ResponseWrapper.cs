@@ -12,14 +12,14 @@ public class ResponseWrapper<T>
     public T? Data { get; set; }
 
 
-    private ResponseWrapper(T data, string message = "Success")
+    private ResponseWrapper(T data)
     {
         Status = ResponseStatus.Success;
         AppError = AppError.None;
         Data = data;
     }
 
-    private ResponseWrapper(AppError error, string message = "")
+    private ResponseWrapper(AppError error)
     {
         Status = ResponseStatus.Failed;
         AppError = error;
@@ -37,6 +37,9 @@ public class ResponseWrapper<T>
     public bool IsFailed => Status == ResponseStatus.Failed;
 
 
-    public static ResponseWrapper<T> Success(T data, string message = "Success") => new(data, message);
+    public static ResponseWrapper<T> Success(T data) => new(data);
     public static ResponseWrapper<T> Fail(AppError internalError) => new(internalError);
+
+    public static implicit operator ResponseWrapper<T>(T data) => new(data);
+    public static implicit operator ResponseWrapper<T>(AppError internalError) => new(internalError);
 }

@@ -1,5 +1,5 @@
+@using GameStore.Services
 @using GameStore.Shared.Navigation
-@using Microsoft.AspNetCore.Components.Authorization
 @attribute [Route(PageRoute.Logout)]
 @layout EmptyLayout
-@inject AuthenticationStateProvider AuthStateProvider;
+@inject LogoutService LogoutService
