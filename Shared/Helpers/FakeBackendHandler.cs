@@ -6,46 +6,18 @@ using GameStore.Shared.Errors;
 using GameStore.Shared.Errors.Auth;
 using GameStore.Shared.Errors.Game;
 using GameStore.Shared.Responses;
+using Newtonsoft.Json;
 
 namespace GameStore.Shared.Helpers;
 
-public class FakeBackendHandler : HttpClientHandler
+public class FakeBackendHandler : DelegatingHandler
 {
-    List<Game> games =
-    [
-        new()
-        {
-            Id = 1,
-            Name = "Street Fighter II",
-            Genre = "Fighting",
-            Price = 19.99M,
-            ReleaseDate = new DateTime(1991, 1, 23)
-        },
-
-        new()
-        {
-            Id = 2,
-            Name = "Final Fantasy XIV",
-            Genre = "RolePlaying",
-            Price = 59.99M,
-            ReleaseDate = new DateTime(2010, 9, 30)
-        },
-
-        new()
-        {
-            Id = 3,
-            Name = "FIFA 23",
-            Genre = "Sports",
-            Price = 69.99M,
-            ReleaseDate = new DateTime(2022, 9, 2)
-        }
-    ];
-
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
         var method = request.Method;
         var path = request.RequestUri.AbsolutePath;
+        var games = FakeData.games;
 
         return await handleRoute();
 
@@ -74,11 +46,13 @@ public class FakeBackendHandler : HttpClientHandler
         {
             await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
             var bodyJson = await request.Content.ReadAsStringAsync();
-            var body = Serialization.Deserialize<UserAccess>(bodyJson);
+            var body = JsonConvert.DeserializeObject<UserAccess>(bodyJson);
+            
 
             if (!body.UserName.Equals("edo") || !body.Password.Equals("123456"))
-                return await Error(HttpStatusCode.Unauthorized,
-                    ResponseWrapper<Client>.Fail(AuthErrors.UnauthorizedUser()));
+                return await Ok(ResponseWrapper<Client>.Success(new Client()));
+            // return await Error(HttpStatusCode.Unauthorized,
+            // ResponseWrapper<Client>.Fail(AuthErrors.UnauthorizedUser()));
 
             var client = new Client
             {
@@ -116,7 +90,7 @@ public class FakeBackendHandler : HttpClientHandler
         {
             await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
             var bodyJson = await request.Content.ReadAsStringAsync();
-            var body = Serialization.Deserialize<Game>(bodyJson);
+            var body = JsonConvert.DeserializeObject<Game>(bodyJson);
             body.Id = games.Max(g => g.Id) + 1;
             games.Add(body);
 
@@ -135,7 +109,7 @@ public class FakeBackendHandler : HttpClientHandler
             }
 
             var bodyJson = await request.Content.ReadAsStringAsync();
-            var body = Serialization.Deserialize<Game>(bodyJson);
+            var body = JsonConvert.DeserializeObject<Game>(bodyJson);
             game.Name = body.Name;
             game.Genre = body.Genre;
             game.Price = body.Price;
@@ -182,7 +156,7 @@ public class FakeBackendHandler : HttpClientHandler
             var response = new HttpResponseMessage
             {
                 StatusCode = statusCode,
-                Content = new StringContent(Serialization.Serialize(content), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json")
             };
 
             await Task.Delay(500, cancellationToken);

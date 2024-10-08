@@ -15,7 +15,7 @@ public class UpdateGameService(IGameRepo gameRepo)
             return GameErrors.GameNotFound();
         }
 
-        var resultUpdate = await gameRepo.UpdateGame(game).ConfigureAwait(false);
+        var resultUpdate = await gameRepo.UpdateGame(game.Id, game).ConfigureAwait(false);
         return resultUpdate;
     }
 }

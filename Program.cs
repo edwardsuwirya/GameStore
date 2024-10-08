@@ -3,11 +3,11 @@ using GameStore;
 using GameStore.Repository;
 using GameStore.Services;
 using GameStore.Shared.Helpers;
-using GameStore.Shared.Services;
 using GameStore.Shared.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,18 +17,11 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 
-void ConfigureRepositories(IServiceCollection services)
-{
-    services.AddScoped<IClientRepo, ClientRepo>();
-    services.AddScoped<IGameRepo, GameRepo>();
-    services.AddScoped<ICredentialRepo, CredentialRepo>();
-}
-
 void ConfigureDomainServices(IServiceCollection services)
 {
     services.AddScoped<LoginService>();
     services.AddScoped<LogoutService>();
-    
+
     services.AddScoped<GetClientListService>();
 
     services.AddScoped<DeleteGameService>();
@@ -38,18 +31,23 @@ void ConfigureDomainServices(IServiceCollection services)
     services.AddScoped<GetGameService>();
 }
 
-void ConfigureCommonServices(IServiceCollection services)
+void ConfigureApiServices(IServiceCollection services)
 {
-    services.AddScoped<IHttpService, HttpService>();
+    // services.AddScoped<IHttpService, HttpService>();
+    var apiUrl = new Uri(builder.Configuration["apiUrl"]);
+    Console.WriteLine($"API URL: {apiUrl}");
+    Action<HttpClient> httpClient = (c) => { c.BaseAddress = apiUrl; };
 
-    services.AddScoped(x =>
-    {
-        var apiUrl = new Uri(builder.Configuration["apiUrl"]);
-        Console.WriteLine($"API URL: {apiUrl}");
-        if (builder.Configuration["fakeBackend"] != "true") return new HttpClient { BaseAddress = apiUrl };
-        var fakeBackendHandler = new FakeBackendHandler();
-        return new HttpClient(fakeBackendHandler) { BaseAddress = apiUrl };
-    });
+    var gameRepo = services.AddRefitClient<IGameRepo>().ConfigureHttpClient(httpClient);
+    var credentialRepo = services.AddRefitClient<ICredentialRepo>().ConfigureHttpClient(httpClient);
+    var clientRepo = services.AddRefitClient<IClientRepo>().ConfigureHttpClient(httpClient);
+
+    if (builder.Configuration["fakeBackend"] != "true") return;
+
+    services.AddTransient<FakeBackendHandler>();
+    gameRepo.AddHttpMessageHandler<FakeBackendHandler>();
+    credentialRepo.AddHttpMessageHandler<FakeBackendHandler>();
+    clientRepo.AddHttpMessageHandler<FakeBackendHandler>();
 }
 
 void ConfigureStateServices(IServiceCollection services)
@@ -59,8 +57,7 @@ void ConfigureStateServices(IServiceCollection services)
     services.AddScoped<LoadingState>();
 }
 
-ConfigureCommonServices(builder.Services);
-ConfigureRepositories(builder.Services);
+ConfigureApiServices(builder.Services);
 ConfigureDomainServices(builder.Services);
 ConfigureStateServices(builder.Services);
 await builder.Build().RunAsync();

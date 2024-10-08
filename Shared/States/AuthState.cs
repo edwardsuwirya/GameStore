@@ -3,6 +3,7 @@ using GameStore.Dtos;
 using GameStore.Models;
 using GameStore.Shared.Helpers;
 using Microsoft.AspNetCore.Components.Authorization;
+using Newtonsoft.Json;
 
 namespace GameStore.Shared.States;
 
@@ -15,7 +16,7 @@ public class AuthState(LocalStorage localStorage) : AuthenticationStateProvider
         var stringToken = await localStorage.GetToken("auth-token");
         if (string.IsNullOrEmpty(stringToken)) return await Task.FromResult(new AuthenticationState(anonymous));
 
-        var clientToken = Serialization.Deserialize<Client>(stringToken);
+        var clientToken = JsonConvert.DeserializeObject<Client>(stringToken);
         if (clientToken == null) return await Task.FromResult(new AuthenticationState(anonymous));
 
         var getUserClaim = new CustomUserClaims(clientToken.Id, clientToken.FirstName, clientToken.Email, "User");
@@ -28,7 +29,7 @@ public class AuthState(LocalStorage localStorage) : AuthenticationStateProvider
         var claimPrincipal = new ClaimsPrincipal();
         if (client != null)
         {
-            var serializedToken = Serialization.Serialize(client);
+            var serializedToken = JsonConvert.SerializeObject(client);
             await localStorage.SetToken(serializedToken, "auth-token");
             var getUserClaim = new CustomUserClaims(client.Id, client.FirstName, client.Email, "User");
             claimPrincipal = SetClaimPrincipal(getUserClaim);
